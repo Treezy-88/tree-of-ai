@@ -1,8 +1,7 @@
 ```python
-import os
 import json
-import numpy as np
-from sklearn.preprocessing import LabelEncoder
+import os
+import random
 
 def load_data(file_path):
     """
@@ -12,44 +11,41 @@ def load_data(file_path):
         data = json.load(file)
     return data
 
-def save_data(data, file_path):
+def save_data(file_path, data):
     """
     Save data to a JSON file.
     """
     with open(file_path, 'w') as file:
         json.dump(data, file)
 
-def normalize_data(data):
+def preprocess_data(data):
     """
-    Normalize data using Min-Max scaling.
+    Preprocess the data.
     """
-    data_min = np.min(data)
-    data_max = np.max(data)
-    return (data - data_min) / (data_max - data_min)
+    # Implement your preprocessing logic here
+    return data
 
-def encode_labels(labels):
+def split_data(data, test_size=0.2):
     """
-    Encode labels using LabelEncoder.
+    Split the data into training and testing sets.
     """
-    encoder = LabelEncoder()
-    encoder.fit(labels)
-    return encoder.transform(labels), encoder
+    data_length = len(data)
+    test_length = int(data_length * test_size)
+    
+    random.shuffle(data)
+    
+    return data[test_length:], data[:test_length]
 
-def decode_labels(encoded_labels, encoder):
+def create_directory(directory_path):
     """
-    Decode labels using LabelEncoder.
+    Create a directory if it doesn't exist.
     """
-    return encoder.inverse_transform(encoded_labels)
+    if not os.path.exists(directory_path):
+        os.makedirs(directory_path)
 
-def get_environment_variable(var_name):
+def get_file_path(directory_path, file_name):
     """
-    Get the value of an environment variable.
+    Get the full file path.
     """
-    return os.getenv(var_name)
-
-def set_environment_variable(var_name, var_value):
-    """
-    Set the value of an environment variable.
-    """
-    os.environ[var_name] = var_value
+    return os.path.join(directory_path, file_name)
 ```

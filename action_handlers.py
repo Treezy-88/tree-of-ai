@@ -1,39 +1,34 @@
 ```python
 import actions
-from utils import preprocess_data
-from nlp_utils import extract_entities
+from utils import preprocess_data, train_model, create_agent, deploy_agent
 
 class ActionHandler:
     def __init__(self):
         self.actions = actions.Action()
 
-    def handle_action(self, action_type, data):
-        if action_type == 'collect_data':
-            return self.actions.collect_data(data)
-        elif action_type == 'preprocess_data':
-            preprocessed_data = preprocess_data(data)
-            return preprocessed_data
-        elif action_type == 'train_bot':
-            return self.actions.train_bot(data)
-        elif action_type == 'create_agent':
-            return self.actions.create_agent(data)
-        elif action_type == 'deploy_agent':
-            return self.actions.deploy_agent(data)
+    def handle_action(self, action_name, data):
+        if action_name == 'retrieve_information':
+            return self.actions.retrieve_information(data)
+        elif action_name == 'execute_command':
+            return self.actions.execute_command(data)
+        elif action_name == 'provide_recommendation':
+            return self.actions.provide_recommendation(data)
         else:
-            raise ValueError(f'Invalid action type: {action_type}')
+            return "Invalid action"
 
-    def handle_intent(self, intent, data):
-        entities = extract_entities(data)
-        if intent == 'collect_data':
-            return self.handle_action('collect_data', entities)
-        elif intent == 'preprocess_data':
-            return self.handle_action('preprocess_data', entities)
-        elif intent == 'train_bot':
-            return self.handle_action('train_bot', entities)
-        elif intent == 'create_agent':
-            return self.handle_action('create_agent', entities)
-        elif intent == 'deploy_agent':
-            return self.handle_action('deploy_agent', entities)
+    def handle_agent_creation(self, agent_data):
+        preprocessed_data = preprocess_data(agent_data)
+        model = train_model(preprocessed_data)
+        agent = create_agent(model)
+        return deploy_agent(agent)
+
+    def handle_agent_action(self, agent, action_name, data):
+        if action_name == 'retrieve_information':
+            return agent.retrieve_information(data)
+        elif action_name == 'execute_command':
+            return agent.execute_command(data)
+        elif action_name == 'provide_recommendation':
+            return agent.provide_recommendation(data)
         else:
-            raise ValueError(f'Invalid intent: {intent}')
+            return "Invalid action"
 ```
