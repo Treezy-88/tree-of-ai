@@ -1,19 +1,17 @@
-Shared Dependencies:
+1. "./main.py": This file will contain the main application logic. Shared dependencies might include function names like "init_app", "run_app"; and imported modules like "utils", "config", "database", "routes", "models".
 
-1. Libraries: All files will share dependencies on several libraries, including TensorFlow, PyTorch, NLTK, spaCy, and Dialogflow. These libraries will be imported in multiple files.
+2. "./utils.py": This file will contain utility functions. Shared dependencies might include function names that are used across other files, such as "connect_db", "query_db", "format_response".
 
-2. User Intents: Defined in "intents.py", these will be used in "chatbot.py" to map user intents to actions, and in "actions.py" to implement the corresponding actions.
+3. "./config.py": This file will contain configuration variables. Shared dependencies might include variable names like "DATABASE_URI", "SECRET_KEY", "DEBUG_MODE".
 
-3. Actions: Defined in "actions.py", these will be used in "chatbot.py" to perform actions based on user intents, and in "action_handlers.py" to handle the execution of these actions.
+4. "./database.py": This file will handle database operations. Shared dependencies might include function names like "get_db", "close_db"; and data schemas for the database tables.
 
-4. Utility Functions: Defined in "utils.py" and "nlp_utils.py", these will be used across multiple files for tasks like data preprocessing, tokenization, and entity recognition.
+5. "./routes.py": This file will define the application routes. Shared dependencies might include function names like "index", "login", "logout", "register"; and message names for flash messages.
 
-5. Integration Functions: Defined in "dialogflow_integration.py", "spacy_integration.py", "nltk_integration.py", "tensorflow_integration.py", and "pytorch_integration.py", these will be used in "chatbot.py" and "actions.py" to integrate with the respective APIs and libraries.
+6. "./models.py": This file will define the data models. Shared dependencies might include class names corresponding to the database tables, and their schema definitions.
 
-6. Data Schemas: The data schemas used for training the AI Bot and AI Agents will be shared across multiple files. These schemas define the structure of the data used for training and will be used in "chatbot.py", "actions.py", and the integration files.
+7. "./templates/index.html": This file will contain the HTML template for the index page. Shared dependencies might include id names of DOM elements like "login-form", "register-form", "user-profile"; and message names for flash messages.
 
-7. Model Parameters: The parameters of the machine learning models used for training the AI Bot and AI Agents will be shared across multiple files. These parameters will be used in "chatbot.py", "actions.py", and the integration files.
+8. "./static/css/main.css": This file will contain the main CSS styles. Shared dependencies might include class names and id names used in the HTML templates.
 
-8. Error Messages: Any error messages or exceptions will be shared across multiple files. These messages will be used in "chatbot.py", "actions.py", and the integration files to handle errors and exceptions.
-
-9. Configuration Variables: Any configuration variables, such as API keys or environment variables, will be shared across multiple files. These variables will be used in "chatbot.py", "actions.py", and the integration files to configure the chatbot and its integrations.
+9. "./static/js/main.js": This file will contain the main JavaScript functions. Shared dependencies might include function names like "validateForm", "submitForm"; and id names of DOM elements that these functions will use.
