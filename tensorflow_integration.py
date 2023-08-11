@@ -1,42 +1,38 @@
 ```python
 import tensorflow as tf
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout, LSTM
-from utils import preprocess_data
+from tensorflow import keras
+from tensorflow.keras import layers
 
 class TensorFlowIntegration:
     def __init__(self):
         self.model = None
 
-    def create_model(self, input_shape):
-        self.model = Sequential()
-        self.model.add(LSTM(128, input_shape=(input_shape), activation='relu', return_sequences=True))
-        self.model.add(Dropout(0.2))
+    def preprocess_data(self, data):
+        # Implement data preprocessing here
+        pass
 
-        self.model.add(LSTM(128, activation='relu'))
-        self.model.add(Dropout(0.2))
+    def train_model(self, data, labels):
+        self.model = keras.Sequential([
+            layers.Dense(64, activation='relu'),
+            layers.Dense(64, activation='relu'),
+            layers.Dense(10)
+        ])
 
-        self.model.add(Dense(32, activation='relu'))
-        self.model.add(Dropout(0.2))
+        self.model.compile(optimizer='adam',
+                      loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+                      metrics=['accuracy'])
 
-        self.model.add(Dense(10, activation='softmax'))
-
-    def compile_model(self):
-        self.model.compile(loss='sparse_categorical_crossentropy',
-                           optimizer='adam',
-                           metrics=['accuracy'])
-
-    def train_model(self, train_data, train_labels, epochs=5):
-        preprocessed_data, preprocessed_labels = preprocess_data(train_data, train_labels)
-        self.model.fit(preprocessed_data, preprocessed_labels, epochs=epochs)
+        self.model.fit(data, labels, epochs=10)
 
     def predict(self, data):
-        preprocessed_data = preprocess_data(data)
-        return self.model.predict(preprocessed_data)
+        predictions = self.model.predict(data)
+        return predictions
 
-    def save_model(self, file_path):
-        self.model.save(file_path)
+    def save_model(self, path):
+        self.model.save(path)
 
-    def load_model(self, file_path):
-        self.model = tf.keras.models.load_model(file_path)
+    def load_model(self, path):
+        self.model = keras.models.load_model(path)
+
+tensorflow_integration = TensorFlowIntegration()
 ```

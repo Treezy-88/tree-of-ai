@@ -1,44 +1,50 @@
 ```python
 import torch
-from torch import nn, optim
-from torch.utils.data import DataLoader, Dataset
-from utils import load_data, preprocess_data
+import torch.nn as nn
+import torch.optim as optim
 
 class PyTorchModel(nn.Module):
     def __init__(self, input_size, hidden_size, output_size):
         super(PyTorchModel, self).__init__()
         self.hidden_size = hidden_size
-        self.l1 = nn.Linear(input_size, hidden_size)
-        self.relu = nn.ReLU()
-        self.l2 = nn.Linear(hidden_size, output_size)
+        self.i2h = nn.Linear(input_size + hidden_size, hidden_size)
+        self.i2o = nn.Linear(input_size + hidden_size, output_size)
+        self.softmax = nn.LogSoftmax(dim=1)
 
-    def forward(self, x):
-        out = self.l1(x)
-        out = self.relu(out)
-        out = self.l2(out)
-        return out
+    def forward(self, input, hidden):
+        combined = torch.cat((input, hidden), 1)
+        hidden = self.i2h(combined)
+        output = self.i2o(combined)
+        output = self.softmax(output)
+        return output, hidden
 
-def train_model(model, train_loader, criterion, optimizer, num_epochs):
-    for epoch in range(num_epochs):
-        for i, (inputs, labels) in enumerate(train_loader):
-            outputs = model(inputs)
-            loss = criterion(outputs, labels)
-            optimizer.zero_grad()
+    def initHidden(self):
+        return torch.zeros(1, self.hidden_size)
+
+def train_model(train_data, model, criterion, optimizer):
+    for epoch in range(100):  
+        for data in train_data:
+            input_tensor, target_tensor = data
+            hidden = model.initHidden()
+            model.zero_grad()
+
+            loss = 0
+            for i in range(input_tensor.size(0)):
+                output, hidden = model(input_tensor[i], hidden)
+                l = criterion(output, target_tensor[i])
+                loss += l
+
             loss.backward()
             optimizer.step()
 
-def create_pytorch_model(input_size, hidden_size, output_size, learning_rate):
+def create_pytorch_model(input_size, hidden_size, output_size):
     model = PyTorchModel(input_size, hidden_size, output_size)
-    criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
-    return model, criterion, optimizer
+    return model
 
-def integrate_pytorch(input_size, hidden_size, output_size, learning_rate, num_epochs, batch_size):
-    data = load_data()
-    preprocessed_data = preprocess_data(data)
-    train_dataset = Dataset(preprocessed_data)
-    train_loader = DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True)
-    model, criterion, optimizer = create_pytorch_model(input_size, hidden_size, output_size, learning_rate)
-    train_model(model, train_loader, criterion, optimizer, num_epochs)
+def integrate_pytorch(input_size, hidden_size, output_size, train_data):
+    model = create_pytorch_model(input_size, hidden_size, output_size)
+    criterion = nn.NLLLoss()
+    optimizer = optim.SGD(model.parameters(), lr=0.01)
+    train_model(train_data, model, criterion, optimizer)
     return model
 ```
